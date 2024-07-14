@@ -9,7 +9,7 @@ def print_usage():
     """
     print("Usage: python domino.py \"<matrix>\"")
     print("Provide the state matrix as a list of lists, separated by commas and semicolons.")
-    print("Example: python domino.py \"0,0,0,1;0,1,0,1;0,1,0,0,0,0,0,0\"")
+    print("Example: python domino.py \"0,0,0,1;0,1,0,1;0,1,0,0;0,0,0,0\"")
 
 def validate_state(state):
     """
@@ -214,7 +214,6 @@ def main():
 
     end_time = time.time()
     execution_time = end_time - start_time
-    print()
     print("Execution time: {:.2f} seconds".format(execution_time))
 
 if __name__ == "__main__":
