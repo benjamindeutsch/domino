@@ -133,7 +133,7 @@ def is_equal(solution_1, solution_2):
 
     return True
 
-def solve_domino(state, avoid, selected_assignments = []):
+def solve_domino(state, selected_assignments = []):
     """
     Solves the domino puzzle for the given state matrix.
 
@@ -143,16 +143,12 @@ def solve_domino(state, avoid, selected_assignments = []):
         selected_assignments (list): The selected assignments for the current solution (default=[]).
 
     Returns:
-        list or None: The solution as a list of assignments, or None if no solution is found.
+        list: A list of solutions, which are lists of assignments.
     """
-    if is_solved(state):
-        if(any(is_equal(solution, selected_assignments) for solution in avoid)):
-            return None
-        return selected_assignments
-    
+    solutions = []
     assignments = domino_assignments(state)
     if(len(assignments) == 0):
-        return None
+        return solutions
     
     for assignment in assignments:
         #create new assignment
@@ -162,25 +158,31 @@ def solve_domino(state, avoid, selected_assignments = []):
         new_state = copy.deepcopy(state)
         new_state[assignment[0][0]][assignment[0][1]] = 1
         new_state[assignment[1][0]][assignment[1][1]] = 1
+        #check whether a goal state is reached
+        if is_solved(new_state):
+            #check whether the solution is a new one
+            solutions.append(new_assignments)
+            continue
         #check whether the new state is solvable
         if(not is_solvable(new_state)):
             continue
-        #solve new state
-        solution = solve_domino(new_state, avoid, new_assignments)
-        if(solution is not None):
-            return solution
+        
+        new_solutions = solve_domino(new_state, new_assignments)
+        for new_solution in new_solutions:
+            if(not any(is_equal(new_solution, solution) for solution in solutions)):
+                solutions.append(new_solution)
     
-    return None
+    return solutions
 
 def main():
     start_time = time.time()
+    # get the matrix from the command line arguments
     if len(sys.argv) < 2:
         print("No matrix provided")
         print_usage()
         exit()
 
     matrix = sys.argv[1]
-
     try:
         input = [[int(num) for num in row.split(',')] for row in matrix.split(';')]
     except:
@@ -193,16 +195,12 @@ def main():
         print_usage()
         exit()
 
-    solutions = []
-    while True:
-        solution = solve_domino(input, solutions)
-        if solution is None:
-            break
-        solutions.append(solution)
-    
+    #solve the domino puzzle
+    solutions = solve_domino(input)
     if(len(solutions) == 0):
         print("No solution found")
 
+    #print the solutions
     count = 1
     for solution in solutions:
         grid = [['0'] * len(input[0]) for _ in range(len(input))]
