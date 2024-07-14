@@ -21,23 +21,20 @@ def validate_state(state):
     Returns:
         bool: True if the state matrix is valid, False otherwise.
     """
-    # Check if state is a list
+    # Check if state is a matrix
     if not isinstance(state, list):
         return False
-    
     if(len(state) == 0):
         return False
-
-    # Check if state is a matrix
     if not all(isinstance(row, list) for row in state):
         return False
-
-    # Check if all elements in the matrix are either 0 or 1
-    if not all(all(element == 0 or element == 1 for element in row) for row in state):
-        return False
-
+    
     # Check if all rows have the same length
     if len(set(len(row) for row in state)) > 1:
+        return False
+    
+    # Check if all elements in the matrix are either 0 or 1
+    if not all(all(element == 0 or element == 1 for element in row) for row in state):
         return False
 
     return True
@@ -83,18 +80,19 @@ def is_solved(state):
     return True
 
 
-def is_solvable(state):
+def is_unsolvable(state):
     """
-    Checks if the given state matrix is solvable by checking whether there is a 0 with no neighbouring 0s.
+    Checks if the given state matrix is unsolvable by checking whether there is a 0 with no neighbouring 0s.
 
     Args:
         state (list): The state matrix.
 
     Returns:
-        bool: False if the state matrix contains a 0 with no neighbouring 0s, True otherwise.
+        bool: True if the state matrix contains a 0 with no neighbouring 0s, False otherwise.
     """
     rows = len(state)
     cols = len(state[0])
+
     for i in range(rows):
         for j in range(cols):
             if state[i][j] == 0:
@@ -110,8 +108,9 @@ def is_solvable(state):
                 # Check if the cell to the right is empty
                 if j < cols - 1 and state[i][j + 1] == 0:
                     continue
-                return False
-    return True
+                return True
+    
+    return False
 
 def is_equal(solution_1, solution_2):
     """
@@ -150,20 +149,19 @@ def solve_domino(state, selected_assignments = []):
         return solutions
     
     for assignment in assignments:
-        #create new assignment
+        #create a new list of assignments
         new_assignments = copy.deepcopy(selected_assignments)
         new_assignments.append(assignment)
-        #create new state
+        #create the new state
         new_state = copy.deepcopy(state)
         new_state[assignment[0][0]][assignment[0][1]] = 1
         new_state[assignment[1][0]][assignment[1][1]] = 1
-        #check whether a goal state is reached
+        #check whether the new state is a goal state
         if is_solved(new_state):
-            #check whether the solution is a new one
             solutions.append(new_assignments)
             continue
-        #check whether the new state is solvable
-        if(not is_solvable(new_state)):
+        #check whether the new state is unsolvable
+        if(is_unsolvable(new_state)):
             continue
         
         new_solutions = solve_domino(new_state, new_assignments)
