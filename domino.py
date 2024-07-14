@@ -8,7 +8,7 @@ def print_usage():
     Prints the usage instructions for running the script.
     """
     print("Usage: python domino.py \"<matrix>\"")
-    print("Enter the state matrix as a list of lists, separated by commas and semicolons.")
+    print("Provide the state matrix as a list of lists, separated by commas and semicolons.")
     print("Example: python domino.py \"0,0,0,1;0,1,0,1;0,1,0,0,0,0,0,0\"")
 
 def validate_state(state):
@@ -50,7 +50,7 @@ def domino_assignments(state):
         state (list): The state matrix.
 
     Returns:
-        list: A list of tuples representing the domino assignments.
+        list: A list of all possible domino assignments. A domino assignment is represented as a tuple of coordinates, e.g. ((0,1),(0,2)).
     """
     rows = len(state)
     cols = len(state[0])
@@ -91,7 +91,7 @@ def is_solvable(state):
         state (list): The state matrix.
 
     Returns:
-        bool: False if the state matrix contains a 0 with no neighbouring 0, True otherwise.
+        bool: False if the state matrix contains a 0 with no neighbouring 0s, True otherwise.
     """
     rows = len(state)
     cols = len(state[0])
@@ -115,7 +115,7 @@ def is_solvable(state):
 
 def is_equal(solution_1, solution_2):
     """
-    Checks if two solutions are equal.
+    Checks if two solutions are equal by checking if they contain the same assignments.
 
     Args:
         solution_1 (list): The first solution.
@@ -139,11 +139,10 @@ def solve_domino(state, selected_assignments = []):
 
     Args:
         state (list): The state matrix.
-        avoid (list): A list of solutions to avoid.
         selected_assignments (list): The selected assignments for the current solution (default=[]).
 
     Returns:
-        list: A list of solutions, which are lists of assignments.
+        list: A list of solutions, which are lists of domino assignments.
     """
     solutions = []
     assignments = domino_assignments(state)
