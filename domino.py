@@ -172,8 +172,8 @@ def solve_domino(state, selected_assignments = []):
 def main():
     start_time = time.time()
     # get the matrix from the command line arguments
-    if len(sys.argv) < 2:
-        print("No matrix provided")
+    if len(sys.argv) != 2:
+        print("Wrong number of arguments")
         print_usage()
         exit()
 
