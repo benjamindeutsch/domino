@@ -145,8 +145,6 @@ def solve_domino(state, selected_assignments = []):
     """
     solutions = []
     assignments = domino_assignments(state)
-    if(len(assignments) == 0):
-        return solutions
     
     for assignment in assignments:
         #create a new list of assignments
@@ -198,16 +196,15 @@ def main():
         print("No solution found")
 
     #print the solutions
-    count = 1
-    for solution in solutions:
+    for i in range(len(solutions)):
+        solution = solutions[i]
         grid = [['0'] * len(input[0]) for _ in range(len(input))]
-        for i in range(len(solution)):
-            assignment = solution[i]
-            letter = LETTERS[i % len(LETTERS)]
+        for j in range(len(solution)):
+            assignment = solution[j]
+            letter = LETTERS[j % len(LETTERS)]
             grid[assignment[0][0]][assignment[0][1]] = letter
             grid[assignment[1][0]][assignment[1][1]] = letter
-        print("Solution " + str(count) + ":")
-        count += 1
+        print("Solution " + str(i+1) + ":")
         for row in grid:
             print(','.join(map(str, row)))
         print()
