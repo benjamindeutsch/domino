@@ -78,26 +78,6 @@ def is_solved(state):
     """
     return not any(0 in row for row in state)
 
-def is_equal(solution_1, solution_2):
-    """
-    Checks if two solutions are equal by checking if they contain the same assignments.
-
-    Args:
-        solution_1 (list): The first solution.
-        solution_2 (list): The second solution.
-
-    Returns:
-        bool: True if the solutions are equal, False otherwise.
-    """
-    if len(solution_1) != len(solution_2):
-        return False
-
-    for i in range(len(solution_1)):
-        if solution_1[i] not in solution_2:
-            return False
-
-    return True
-
 def solve_domino(state, selected_assignments = []):
     """
     Solves the domino puzzle for the given state matrix.
@@ -126,9 +106,7 @@ def solve_domino(state, selected_assignments = []):
             continue
         
         new_solutions = solve_domino(new_state, new_assignments)
-        for new_solution in new_solutions:
-            if(not any(is_equal(new_solution, solution) for solution in solutions)):
-                solutions.append(new_solution)
+        solutions.extend(new_solutions)
     
     return solutions
 
