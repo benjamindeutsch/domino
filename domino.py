@@ -41,13 +41,13 @@ def validate_state(state):
 
 def domino_assignments(state):
     """
-    Finds all possible domino assignments in the given state matrix.
+    Finds a field with a 0 and returns the possible domino assignments for that field.
 
     Args:
         state (list): The state matrix.
 
     Returns:
-        list: A list of all possible domino assignments. A domino assignment is represented as a tuple of coordinates, e.g. ((0,1),(0,2)).
+        list: A list of domino assignments. A domino assignment is represented as a tuple of coordinates, e.g. ((0,1),(0,2)). An empty list is returned if no assignments are possible for the selected 0 or if there is no 0.
     """
     rows = len(state)
     cols = len(state[0])
@@ -57,13 +57,16 @@ def domino_assignments(state):
         for j in range(cols):
             if state[i][j] == 0:
                 # Check if the cell above is empty
-                if i > 0 and state[i - 1][j] == 0:
-                    assignments.append(((i - 1, j), (i, j)))
+                if i < rows-1 and state[i + 1][j] == 0:
+                    assignments.append(((i + 1, j), (i, j)))
                 # Check if the cell to the left is empty
-                if j > 0 and state[i][j - 1] == 0:
-                    assignments.append(((i, j - 1), (i, j)))
-
+                if j < cols-1 and state[i][j + 1] == 0:
+                    assignments.append(((i, j + 1), (i, j)))
+                return assignments
+    
     return assignments
+
+    
 
 def is_solved(state):
     """
@@ -75,42 +78,7 @@ def is_solved(state):
     Returns:
         bool: True if the state matrix is solved, False otherwise.
     """
-    if any(0 in row for row in state):
-        return False
-    return True
-
-
-def is_unsolvable(state):
-    """
-    Checks if the given state matrix is unsolvable by checking whether there is a 0 with no neighbouring 0s.
-
-    Args:
-        state (list): The state matrix.
-
-    Returns:
-        bool: True if the state matrix contains a 0 with no neighbouring 0s, False otherwise.
-    """
-    rows = len(state)
-    cols = len(state[0])
-
-    for i in range(rows):
-        for j in range(cols):
-            if state[i][j] == 0:
-                # Check if the cell above is empty
-                if i > 0 and state[i - 1][j] == 0:
-                    continue
-                # Check if the cell below is empty
-                if i < rows - 1 and state[i + 1][j] == 0:
-                    continue
-                # Check if the cell to the left is empty
-                if j > 0 and state[i][j - 1] == 0:
-                    continue
-                # Check if the cell to the right is empty
-                if j < cols - 1 and state[i][j + 1] == 0:
-                    continue
-                return True
-    
-    return False
+    return not any(0 in row for row in state)
 
 def is_equal(solution_1, solution_2):
     """
@@ -157,9 +125,6 @@ def solve_domino(state, selected_assignments = []):
         #check whether the new state is a goal state
         if is_solved(new_state):
             solutions.append(new_assignments)
-            continue
-        #check whether the new state is unsolvable
-        if(is_unsolvable(new_state)):
             continue
         
         new_solutions = solve_domino(new_state, new_assignments)
