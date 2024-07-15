@@ -66,8 +66,6 @@ def domino_assignments(state):
     
     return assignments
 
-    
-
 def is_solved(state):
     """
     Checks if the given state matrix is solved.
